@@ -1,0 +1,24 @@
+commit 455de3443be8194e2d22dcd397d8f30b94fd10ad
+Author: Zane Bitter <zbitter@redhat.com>
+Date:   Mon Aug 8 14:14:53 2011 +0200
+
+    Initialise all properties at object creation
+    
+    Signed-off-by: Zane Bitter <zbitter@redhat.com>
+
+diff --git a/src/DomainWrap.cpp b/src/DomainWrap.cpp
+index 87244f2..d912661 100644
+--- a/src/DomainWrap.cpp
++++ b/src/DomainWrap.cpp
+@@ -37,8 +37,10 @@ DomainWrap::DomainWrap(
+     _data.setProperty("node", parent->objectID());
+ 
+     // Set defaults
+-    _data.setProperty("state", "");
++    _data.setProperty("id", -1);
++    _data.setProperty("state", "nostate");
+     _data.setProperty("numVcpus", 0);
++    _data.setProperty("active", "false");
+     _data.setProperty("maximumMemory", (uint64_t)0);
+     _data.setProperty("memory", (uint64_t)0);
+     _data.setProperty("cpuTime", (uint64_t)0);

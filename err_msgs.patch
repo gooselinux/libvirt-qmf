@@ -1,0 +1,52 @@
+commit 77b628613c072a13359576ca9e700caabee7aafb
+Author: Zane Bitter <zbitter@redhat.com>
+Date:   Mon Aug 8 16:04:24 2011 +0200
+
+    Correct various error messages
+    
+    Signed-off-by: Zane Bitter <zbitter@redhat.com>
+
+diff --git a/src/DomainWrap.cpp b/src/DomainWrap.cpp
+index d912661..c458646 100644
+--- a/src/DomainWrap.cpp
++++ b/src/DomainWrap.cpp
+@@ -198,7 +198,7 @@ DomainWrap::handleMethod(qmf::AgentSession& session, qmf::AgentEvent& event)
+         int ret = virDomainRestore(_conn, filename.c_str());
+         update();
+         if (ret < 0) {
+-            std::string err = FORMAT_ERR(_conn, "Error saving domain (virDomainSave).", &ret);
++            std::string err = FORMAT_ERR(_conn, "Error restoring domain (virDomainRestore).", &ret);
+             raiseException(session, event, err, STATUS_USER + ret);
+         } else {
+             session.methodSuccess(event);
+@@ -234,7 +234,7 @@ DomainWrap::handleMethod(qmf::AgentSession& session, qmf::AgentEvent& event)
+         const char *desc = virDomainGetXMLDesc(_domain_ptr,
+                 VIR_DOMAIN_XML_SECURE | VIR_DOMAIN_XML_INACTIVE);
+         if (!desc) {
+-            std::string err = FORMAT_ERR(_conn, "Error rebooting domain (virDomainReboot).", &ret);
++            std::string err = FORMAT_ERR(_conn, "Error getting XML description of domain (virDomainGetXMLDesc).", &ret);
+             raiseException(session, event, err, STATUS_USER + ret);
+         } else {
+             event.addReturnArgument("description", desc);
+diff --git a/src/NodeWrap.cpp b/src/NodeWrap.cpp
+index ccbd6c8..ed40bd5 100644
+--- a/src/NodeWrap.cpp
++++ b/src/NodeWrap.cpp
+@@ -386,7 +386,7 @@ NodeWrap::domainDefineXML(qmf::AgentSession& session,
+ 
+     virDomainPtr domain_ptr = virDomainDefineXML(_conn, xmlDesc.c_str());
+     if (!domain_ptr) {
+-        std::string err = FORMAT_ERR(_conn, "Error creating domain using xml description (virDomainDefineXML).", &ret);
++        std::string err = FORMAT_ERR(_conn, "Error defining domain using xml description (virDomainDefineXML).", &ret);
+         raiseException(session, event, err, STATUS_USER + ret);
+         return false;
+     }
+@@ -497,7 +497,7 @@ NodeWrap::findStoragePoolSources(qmf::AgentSession& session,
+ 
+     xml_result = virConnectFindStoragePoolSources(_conn, type.c_str(), srcSpec.c_str(), 0);
+     if (xml_result == NULL) {
+-        std::string err = FORMAT_ERR(_conn, "Error creating storage pool using xml description (virStoragePoolCreateXML).", &ret);
++        std::string err = FORMAT_ERR(_conn, "Error finding storage pool sources (virConnectFindStoragePoolSources).", &ret);
+         raiseException(session, event, err, STATUS_USER + ret);
+         return false;
+     }
